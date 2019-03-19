@@ -76,6 +76,11 @@ class SkinResourceManager(private var mDefaultResources: Resources) {
         }
     }
 
+    fun restoreSkinDefault() {
+       mSkinPluginPackageName = null
+      mSkinPluginResources = null
+    }
+
 
     private val tag = javaClass.simpleName
     var mSkinPluginPackageName: String? = null

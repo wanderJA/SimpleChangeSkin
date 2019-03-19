@@ -13,7 +13,7 @@
         android:layout_height="300dp"
         android:background="@color/colorAccent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/message"
@@ -35,6 +35,17 @@
         android:src="@drawable/detail_relative_books"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/message" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/changeSkin"
+        android:id="@+id/changeSkinButton"
+        android:background="@drawable/circle_reader_bg_1_selecter"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/skinImage"
+        />
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

@@ -36,13 +36,18 @@ class SkinAttribute(
             try {
                 val attrValueName = context.resources.getResourceEntryName(resId)
                 val attrValueType = context.resources.getResourceTypeName(resId)
-                skinAttr = SkinAttribute(attrName, resId, attrValueName, attrValueType)
+                skinAttr = SkinAttribute(attrName, resId, attrValueType, attrValueName)
+                Log.d("SkinAttribute",skinAttr.toString())
             } catch (ex: Exception) {
                 Log.e("parseSkinAttr", " parseSkinAttr--- error happened ", ex)
             }
 
             return skinAttr
         }
+    }
+
+    override fun toString(): String {
+        return "SkinAttribute(attrName='$attrName', resId=$resId, attrValueTypeName='$attrValueTypeName', attrValueRefName='$attrValueRefName')"
     }
 
 
