@@ -1,5 +1,6 @@
 package com.wander.simplechangeskin
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -15,7 +16,7 @@ import java.io.File
 
 class MainActivity : AppCompatActivity(), ISkinChangeObserver {
     override fun onChanged(newSkinPath: String?) {
-        changeSkinButton.isEnabled = SkinManager.pluginSkinPath != currentSkinPath
+        changeSkinButton.isEnabled = SkinManager.pluginSkinPath == null
     }
 
     val tag = "MainActivity"
@@ -23,21 +24,21 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                SkinManager.getSkinString(R.string.title_home) { charSequence -> message.text = charSequence }
-                if (currentSkinPath != SkinManager.pluginSkinPath) {
+                SkinManager.setText(message, R.string.title_home)
+                if (null == SkinManager.pluginSkinPath) {
                     changeSkin()
                 }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                if (currentSkinPath == SkinManager.pluginSkinPath) {
-                    message.setText(R.string.title_dashboard)
+                if (null != SkinManager.pluginSkinPath) {
+                    SkinManager.setText(message, R.string.title_dashboard)
                     SkinManager.restoreSkin()
                 }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-                message.setText(R.string.title_notifications)
+                SkinManager.setText(message, R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
 
 
         shapeView.setSkinShapeColor(R.color.lightColor)
+        shapeView.setOnClickListener { startActivity(Intent(this, MainActivity2::class.java)) }
         SkinManager.addObserver(this)
     }
 
@@ -84,7 +86,6 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
     }
 
-    var currentSkinPath = ""
     private fun changeSkin() {
         GlobalScope.launch {
             //将assets目录下的皮肤文件拷贝到data/data/.../cache目录下
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
             //        if (!file.exists()) {
             AssetFileUtils.copyAssetFile(App.instance, asset_dir, saveDir, saveFileName)
             //        }
-            currentSkinPath = file.absolutePath
+            val currentSkinPath = file.absolutePath
             SkinManager.loadNewSkin(currentSkinPath, object : OnLoadSkinListener {
                 override fun onSuccess() {
                     toast("切换成功")

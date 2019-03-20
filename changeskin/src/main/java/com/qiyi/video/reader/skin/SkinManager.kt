@@ -87,7 +87,8 @@ object SkinManager {
                 pluginSkinPath = newSkinPath
             }
 
-            override fun onPreExecute() {
+
+            override fun onPostExecute(result: Unit?) {
                 Handler(Looper.getMainLooper()).post {
                     notifySkinChanged()
                     onLoadSkinListener?.onSuccess()
