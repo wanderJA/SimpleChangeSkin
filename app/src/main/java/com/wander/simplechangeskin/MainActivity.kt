@@ -7,8 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import com.qiyi.video.reader.skin.SkinManager
 import com.qiyi.video.reader.skin.utils.ISkinChangeObserver
+import com.qiyi.video.reader.skin.utils.OnLoadSkinListener
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -97,7 +97,15 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
             AssetFileUtils.copyAssetFile(App.instance, asset_dir, saveDir, saveFileName)
             //        }
             currentSkinPath = file.absolutePath
-            SkinManager.loadNewSkin(currentSkinPath)
+            SkinManager.loadNewSkin(currentSkinPath, object : OnLoadSkinListener {
+                override fun onSuccess() {
+                    toast("切换成功")
+                }
+
+                override fun onFail() {
+                    toast("changeSkinFail")
+                }
+            })
         }
     }
 }

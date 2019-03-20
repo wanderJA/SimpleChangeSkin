@@ -3,6 +3,9 @@ package com.qiyi.video.reader.skin
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.AsyncTask
+import android.os.Handler
+import android.os.Looper
 import android.support.annotation.ColorRes
 import android.support.annotation.MainThread
 import android.text.TextUtils
@@ -12,11 +15,9 @@ import android.widget.TextView
 import com.qiyi.video.reader.skin.attribute.SkinAttribute
 import com.qiyi.video.reader.skin.skinDeployer.SkinDeployerFactory
 import com.qiyi.video.reader.skin.utils.ISkinChangeObserver
+import com.qiyi.video.reader.skin.utils.OnLoadSkinListener
 import com.qiyi.video.reader.skin.utils.PluginLoadUtils
 import com.qiyi.video.reader.skin.utils.SkinConfig
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,39 +54,47 @@ object SkinManager {
         }
     }
 
-    fun loadNewSkin(currentSkinPath: String?) {
-        if (currentSkinPath.isNullOrEmpty()) {
+    fun loadNewSkin(newSkinPath: String?, onLoadSkinListener: OnLoadSkinListener? = null) {
+        if (newSkinPath.isNullOrEmpty()) {
             return
         }
+        object : AsyncTask<String, Unit, Unit>() {
+            override fun doInBackground(vararg params: String?) {
+                val skinPath = params[0]
+                val file = File(skinPath)
+                if (!file.exists()) {
+                    onLoadSkinListener?.onFail()
+                    return
+                }
+                val pluginResources = PluginLoadUtils.getPluginResources(context, newSkinPath)
+                val packageInfo = PluginLoadUtils.getPackageInfo(context, newSkinPath)
+                if (packageInfo == null || pluginResources == null) {
+                    onLoadSkinListener?.onFail()
+                    return
+                }
+                val skinPackageName = packageInfo.packageName
 
-        GlobalScope.launch {
-            val file = File(currentSkinPath)
-            if (!file.exists()) {
-                return@launch
+                if (TextUtils.isEmpty(skinPackageName)) {
+                    onLoadSkinListener?.onFail()
+                    return
+                }
+
+                skinResourceManager.mSkinPluginResources = pluginResources
+                skinResourceManager.mSkinPluginPackageName = skinPackageName
+
+                SkinConfig.saveSkinPath(context, newSkinPath)
+
+                pluginSkinPath = newSkinPath
             }
-            val pluginResources = PluginLoadUtils.getPluginResources(context, currentSkinPath)
-            val packageInfo = PluginLoadUtils.getPackageInfo(context, currentSkinPath)
-            if (packageInfo == null || pluginResources == null) {
-                return@launch
-            }
-            val skinPackageName = packageInfo.packageName
 
-            if (TextUtils.isEmpty(skinPackageName)) {
-                return@launch
+            override fun onPreExecute() {
+                Handler(Looper.getMainLooper()).post {
+                    notifySkinChanged()
+                    onLoadSkinListener?.onSuccess()
+                }
             }
 
-            skinResourceManager.mSkinPluginResources = pluginResources
-            skinResourceManager.mSkinPluginPackageName = skinPackageName
-
-            SkinConfig.saveSkinPath(context, currentSkinPath)
-
-            pluginSkinPath = currentSkinPath
-
-            launch(Dispatchers.Main) {
-                notifySkinChanged()
-            }
-        }
-
+        }.execute(newSkinPath)
     }
 
     private fun notifySkinChanged() {
