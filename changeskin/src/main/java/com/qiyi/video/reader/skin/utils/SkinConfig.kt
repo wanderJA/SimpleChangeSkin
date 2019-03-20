@@ -9,10 +9,10 @@ import android.content.SharedPreferences
  *
  */
 object SkinConfig {
-    const val skinPath = "skinPath"
+    private const val skinPath = "skinPath"
     const val resTypeColor = "color"
     const val resTypeDrawable = "drawable"
-    const val resTypeColorList = "colorList"
+    const val resTypeString = "string"
 
 
     fun getPref(context: Context): SharedPreferences {

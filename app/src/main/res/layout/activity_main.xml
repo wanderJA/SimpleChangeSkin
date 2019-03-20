@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
+    <ImageView
         android:id="@+id/colorBg"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:background="@color/colorAccent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@id/navigation"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/message"
@@ -36,15 +36,35 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/message" />
 
-    <Button
+    <CheckBox
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/changeSkin"
-        android:id="@+id/changeSkinButton"
-        android:background="@drawable/circle_reader_bg_1_selecter"
+        android:layout_marginTop="20dp"
+        android:checked="true"
+        android:text="@string/app_name"
+        android:textColor="@color/check_color_list"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/skinImage"
-        />
+        app:layout_constraintTop_toBottomOf="@id/skinImage" />
+
+    <Button
+        android:id="@+id/changeSkinButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circle_reader_bg_1_selecter"
+        android:text="@string/changeSkin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox" />
+
+
+    <com.wander.simplechangeskin.business.ShapeView
+        android:id="@+id/shapeView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/changeSkinButton" />
 
 
     <android.support.design.widget.BottomNavigationView

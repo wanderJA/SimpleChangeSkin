@@ -7,13 +7,13 @@ import com.qiyi.video.reader.skin.utils.SkinConfig
 
 /**
  * author wander
- * date 2019/3/19
+ * date 2019/3/20
  *
  */
-class TextColorResDeployer : ISkinResDeployer<TextView> {
+class TextColorStateListDeployer:ISkinResDeployer<TextView> {
     override fun deploy(view: TextView, skinAttribute: SkinAttribute, skinResourceManager: SkinResourceManager) {
         if (SkinConfig.resTypeColor == skinAttribute.attrValueTypeName) {
-            view.setTextColor(skinResourceManager.getColor(skinAttribute))
+            view.setTextColor(skinResourceManager.getColorStateList(skinAttribute))
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.qiyi.video.reader.skin
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.annotation.ColorInt
-import android.support.annotation.DrawableRes
+import android.util.Log
 import com.qiyi.video.reader.skin.attribute.SkinAttribute
 
 /**
@@ -13,6 +14,30 @@ import com.qiyi.video.reader.skin.attribute.SkinAttribute
  *
  */
 class SkinResourceManager(private var mDefaultResources: Resources) {
+    fun getColorStateList(skinAttribute: SkinAttribute): ColorStateList {
+        if (mSkinPluginResources == null) {
+            return getColorStateListCompat(mDefaultResources, skinAttribute.resId)
+        }
+
+        val realResId = getRealResId(skinAttribute)
+        var realColorStateList: ColorStateList? = null
+        try {
+            realColorStateList = mSkinPluginResources?.let {
+                return@let getColorStateListCompat(it, realResId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (realColorStateList == null) {
+            try {
+                realColorStateList = getColorStateListCompat(mDefaultResources, skinAttribute.resId)
+            } catch (e: Exception) {
+            }
+        }
+        //不是colorStateList直接获取color
+        Log.d(tag, "not color list")
+        return realColorStateList ?: ColorStateList(Array(1) { IntArray(1) }, IntArray(getColor(skinAttribute)))
+    }
     @ColorInt
     fun getColor(skinAttribute: SkinAttribute): Int {
         if (mSkinPluginResources == null) {
@@ -52,6 +77,7 @@ class SkinResourceManager(private var mDefaultResources: Resources) {
         return realDrawable
     }
 
+    @Suppress("DEPRECATION")
     private fun getDrawableCompat(resources: Resources, resId: Int): Drawable {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             resources.getDrawable(resId, null)
@@ -68,6 +94,7 @@ class SkinResourceManager(private var mDefaultResources: Resources) {
         ) ?: -1
     }
 
+    @Suppress("DEPRECATION")
     private fun getColorCompat(resources: Resources, resId: Int): Int {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             resources.getColor(resId, null)
@@ -76,9 +103,52 @@ class SkinResourceManager(private var mDefaultResources: Resources) {
         }
     }
 
+    @Suppress("DEPRECATION")
+    private fun getColorStateListCompat(resources: Resources, resId: Int): ColorStateList {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            resources.getColorStateList(resId, null)
+        } else {
+            resources.getColorStateList(resId)
+        }
+    }
+
     fun restoreSkinDefault() {
-       mSkinPluginPackageName = null
-      mSkinPluginResources = null
+        mSkinPluginPackageName = null
+        mSkinPluginResources = null
+    }
+
+    fun getString(skinAttribute: SkinAttribute): CharSequence {
+        if (mSkinPluginResources == null) {
+            return mDefaultResources.getString(skinAttribute.resId)
+        }
+
+        val realResId = getRealResId(skinAttribute)
+        var realString: CharSequence? = null
+        try {
+            realString = mSkinPluginResources?.let {
+                return@let it.getString(realResId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return realString ?: mDefaultResources.getString(skinAttribute.resId)
+    }
+
+    fun getDimen(skinAttribute: SkinAttribute): Float {
+        if (mSkinPluginResources == null) {
+            return mDefaultResources.getDimension(skinAttribute.resId)
+        }
+
+        val realResId = getRealResId(skinAttribute)
+        var realDimen: Float? = null
+        try {
+            realDimen = mSkinPluginResources?.let {
+                return@let it.getDimension(realResId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return realDimen ?: mDefaultResources.getDimension(skinAttribute.resId)
     }
 
 

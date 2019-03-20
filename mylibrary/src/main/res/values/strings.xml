@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Library</string>
+    <string name="title_home">字体颜色,文字和背景同时替换</string>
+    <string name="changeSkin">已换新肤</string>
 </resources>

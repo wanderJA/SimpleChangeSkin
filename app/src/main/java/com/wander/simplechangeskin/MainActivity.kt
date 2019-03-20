@@ -6,26 +6,34 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.qiyi.video.reader.skin.SkinManager
+import com.qiyi.video.reader.skin.utils.ISkinChangeObserver
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ISkinChangeObserver {
+    override fun onChanged(newSkinPath: String?) {
+        changeSkinButton.isEnabled = SkinManager.pluginSkinPath != currentSkinPath
+    }
 
     val tag = "MainActivity"
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-                message.setText(R.string.title_home)
-                changeSkin()
+                SkinManager.getSkinString(R.string.title_home) { charSequence -> message.text = charSequence }
+                if (currentSkinPath != SkinManager.pluginSkinPath) {
+                    changeSkin()
+                }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                message.setText(R.string.title_dashboard)
-                SkinManager.restoreSkin()
+                if (currentSkinPath == SkinManager.pluginSkinPath) {
+                    message.setText(R.string.title_dashboard)
+                    SkinManager.restoreSkin()
+                }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
@@ -50,9 +58,25 @@ class MainActivity : AppCompatActivity() {
         }
         changeSkinButton.setOnClickListener { changeSkin() }
         SkinManager.setTextViewColor(message, R.color.lightColor)
+        SkinManager.setBackground(message, R.color.colorBg)
+        SkinManager.setText(message, R.string.title_home)
         SkinManager.setImageResource(skinImage, R.drawable.detail_relative_books)
         SkinManager.setBackground(changeSkinButton, R.drawable.circle_reader_bg_1_selecter)
+        SkinManager.setTextViewColor(checkbox, R.color.check_color_list)
+        SkinManager.getSkinDrawable(R.drawable.detail_relative_books, object : ISkinChangeObserver {
+            override fun onChanged(newSkinPath: String?) {
+                colorBg.setImageDrawable(SkinManager.getSkinDrawable(R.drawable.detail_relative_books))
+            }
+        })
 
+
+        shapeView.setSkinShapeColor(R.color.lightColor)
+        SkinManager.addObserver(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SkinManager.removeObserver(this)
     }
 
     private fun toast(s: String) {
@@ -60,21 +84,20 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
     }
 
+    var currentSkinPath = ""
     private fun changeSkin() {
         GlobalScope.launch {
             //将assets目录下的皮肤文件拷贝到data/data/.../cache目录下
             Log.d(tag, "thread ${Thread.currentThread().name}")
             val saveDir = cacheDir.absolutePath + "/skins"
-            val savefileName = "/skin1.skin"
+            val saveFileName = "skin1.skin"
             val asset_dir = "skins/mylibrary-debug.apk"
-            val file = File(saveDir + File.separator + savefileName)
+            val file = File(saveDir + File.separator + saveFileName)
             //        if (!file.exists()) {
-            AssetFileUtils.copyAssetFile(App.instance, asset_dir, saveDir, savefileName)
+            AssetFileUtils.copyAssetFile(App.instance, asset_dir, saveDir, saveFileName)
             //        }
-            SkinManager.loadNewSkin(file.absolutePath)
-            launch(Dispatchers.Main) {
-                changeSkinButton.isSelected = SkinManager.pluginSkinPath == file.absolutePath
-            }
+            currentSkinPath = file.absolutePath
+            SkinManager.loadNewSkin(currentSkinPath)
         }
     }
 }
