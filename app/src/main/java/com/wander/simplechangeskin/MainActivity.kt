@@ -64,12 +64,6 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
         SkinManager.setImageResource(skinImage, R.drawable.detail_relative_books)
         SkinManager.setBackground(changeSkinButton, R.drawable.circle_reader_bg_1_selecter)
         SkinManager.setTextViewColor(checkbox, R.color.check_color_list)
-        SkinManager.getSkinDrawable(R.drawable.detail_relative_books, object : ISkinChangeObserver {
-            override fun onChanged(newSkinPath: String?) {
-                colorBg.setImageDrawable(SkinManager.getSkinDrawable(R.drawable.detail_relative_books))
-            }
-        })
-
 
         shapeView.setSkinShapeColor(R.color.lightColor)
         shapeView.setOnClickListener { startActivity(Intent(this, MainActivity2::class.java)) }
@@ -79,6 +73,7 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
     override fun onDestroy() {
         super.onDestroy()
         SkinManager.removeObserver(this)
+        SkinManager.destroy()
     }
 
     private fun toast(s: String) {

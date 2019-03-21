@@ -45,6 +45,13 @@ object SkinManager {
         loadCurrentSkin()
     }
 
+
+    fun destroy() {
+        mSkinViewMap.clear()
+        skinResourceManager.restoreSkinDefault()
+        skinChangeObservers.clear()
+    }
+
     private fun loadCurrentSkin() {
         val currentSkinPath = SkinConfig.getCurrentSkinPath(context)
         if (currentSkinPath.isNullOrEmpty()) {
