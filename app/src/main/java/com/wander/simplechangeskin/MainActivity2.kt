@@ -3,6 +3,7 @@ package com.wander.simplechangeskin
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.qiyi.video.reader.skin.SkinManager
 import com.wander.simplechangeskin.dummy.DummyContent
 
 class MainActivity2 : AppCompatActivity(), ItemFragment.OnListFragmentInteractionListener {
@@ -19,5 +20,10 @@ class MainActivity2 : AppCompatActivity(), ItemFragment.OnListFragmentInteractio
 
     override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
         startActivity(Intent(this, MainActivity::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        SkinManager.releaseViewImmediately(this)
     }
 }

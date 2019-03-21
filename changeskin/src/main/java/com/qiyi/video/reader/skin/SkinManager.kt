@@ -35,7 +35,7 @@ object SkinManager {
     private lateinit var context: Context
     var pluginSkinPath: String? = null
     lateinit var skinResourceManager: SkinResourceManager
-    private val mSkinViewMap = WeakHashMap<View, HashMap<String, SkinAttribute>>()
+    val mSkinViewMap = WeakHashMap<View, HashMap<String, SkinAttribute>>()
     private val skinChangeObservers = ArrayList<ISkinChangeObserver>()
 
     @MainThread
@@ -49,6 +49,20 @@ object SkinManager {
     fun destroy() {
         mSkinViewMap.clear()
         skinChangeObservers.clear()
+    }
+
+    /**
+     * 在view需要被释放时，主动调用该方法，可以立即从缓存中释放，降低内存泄漏
+     */
+    fun releaseViewImmediately(context: Context) {
+        val iterator = mSkinViewMap.entries.iterator()
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            val view = entry.key
+            if (view != null && view.context === context) {
+                iterator.remove()
+            }
+        }
     }
 
     private fun loadCurrentSkin() {

@@ -68,12 +68,17 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
         shapeView.setSkinShapeColor(R.color.lightColor)
         shapeView.setOnClickListener { startActivity(Intent(this, MainActivity2::class.java)) }
         SkinManager.addObserver(this)
+        Log.e(tag, "skinViewSize:${SkinManager.mSkinViewMap.size}")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         SkinManager.removeObserver(this)
-        SkinManager.destroy()
+        if (isTaskRoot) {
+            SkinManager.destroy()
+        } else {
+            SkinManager.releaseViewImmediately(this)
+        }
     }
 
     private fun toast(s: String) {
