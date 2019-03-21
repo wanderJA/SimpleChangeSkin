@@ -48,7 +48,6 @@ object SkinManager {
 
     fun destroy() {
         mSkinViewMap.clear()
-        skinResourceManager.restoreSkinDefault()
         skinChangeObservers.clear()
     }
 
