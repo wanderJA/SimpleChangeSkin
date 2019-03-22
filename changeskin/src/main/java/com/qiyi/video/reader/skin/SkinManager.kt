@@ -144,7 +144,7 @@ object SkinManager {
     /**
      * 设置需要换肤的view
      * 获取到皮肤中对应的资源，然后应用到view中
-     * @param attrName view 需要设置的资源，保持唯一，对应[SkinDeployerFactory.supportSkinDeployer]
+     * @param attrName view 需要设置的属性，保持唯一，对应[SkinDeployerFactory.supportSkinDeployer]
      */
     fun setSkinViewResource(view: View, attrName: String, resId: Int) {
         val parseSkinAttr = SkinAttribute.parseSkinAttr(view.context, attrName, resId)
