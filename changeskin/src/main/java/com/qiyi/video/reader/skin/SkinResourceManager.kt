@@ -36,7 +36,7 @@ class SkinResourceManager(private var mDefaultResources: Resources) {
         }
         //不是colorStateList直接获取color
         Log.d(tag, "not color list")
-        return realColorStateList ?: ColorStateList(Array(1) { IntArray(1) }, IntArray(getColor(skinAttribute)))
+        return realColorStateList ?: ColorStateList.valueOf(getColor(skinAttribute))
     }
     @ColorInt
     fun getColor(skinAttribute: SkinAttribute): Int {

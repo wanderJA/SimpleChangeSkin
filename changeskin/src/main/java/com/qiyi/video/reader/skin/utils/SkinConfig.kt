@@ -14,6 +14,15 @@ object SkinConfig {
     const val resTypeDrawable = "drawable"
     const val resTypeString = "string"
 
+    /***
+     * 支持的命名空间
+     */
+    const val SKIN_XML_NAMESPACE = "http://schemas.android.com/android/skin"
+
+    /**界面元素支持换肤的属性 */
+    const val ATTR_SKIN_ENABLE = "enable"
+    const val SUPPORTED_ATTR_SKIN_LIST = "attrs"
+
 
     fun getPref(context: Context): SharedPreferences {
         return context.getSharedPreferences("Skin_Pref", Context.MODE_PRIVATE)

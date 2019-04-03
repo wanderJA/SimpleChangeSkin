@@ -6,6 +6,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
+import com.qiyi.video.reader.skin.SkinInflaterFactory
 import com.qiyi.video.reader.skin.SkinManager
 import com.qiyi.video.reader.skin.utils.ISkinChangeObserver
 import com.qiyi.video.reader.skin.utils.OnLoadSkinListener
@@ -46,10 +47,12 @@ class MainActivity : AppCompatActivity(), ISkinChangeObserver {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SkinInflaterFactory.setFactory(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
 
 
         colorBg.setOnClickListener { toast("bg") }

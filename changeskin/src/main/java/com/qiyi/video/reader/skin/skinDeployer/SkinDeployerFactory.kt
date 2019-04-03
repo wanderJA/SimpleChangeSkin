@@ -10,14 +10,14 @@ import android.view.View
 object SkinDeployerFactory {
     private val supportSkinDeployer = HashMap<String, ISkinResDeployer<*>>()
     const val BACKGROUND = "background"
-    const val IMAGE_RES = "image_res"
-    const val TEXT_COLOR = "text_color"
-    const val TEXT_STRING = "text_string"
+    const val SRC = "src"
+    const val TEXT_COLOR = "textColor"
+    const val TEXT_STRING = "text"
     const val COLOR_LIST = "color_list"
 
     init {
         supportSkinDeployer[BACKGROUND] = BackgroundResDeployer()
-        supportSkinDeployer[IMAGE_RES] = ImageResDeployer()
+        supportSkinDeployer[SRC] = ImageResDeployer()
         supportSkinDeployer[TEXT_COLOR] = TextColorResDeployer()
         supportSkinDeployer[TEXT_STRING] = TextStringResDeployer()
         supportSkinDeployer[COLOR_LIST] = TextColorStateListDeployer()
@@ -33,6 +33,10 @@ object SkinDeployerFactory {
 
     fun getSkinDeployer(attrName: String): ISkinResDeployer<View>? {
         return supportSkinDeployer[attrName] as ISkinResDeployer<View>?
+    }
+
+    fun isSupportAttr(attributeName: String): Boolean {
+        return supportSkinDeployer.containsKey(attributeName)
     }
 
 

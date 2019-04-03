@@ -146,12 +146,13 @@ object SkinManager {
      * 获取到皮肤中对应的资源，然后应用到view中
      * @param attrName view 需要设置的属性，保持唯一，对应[SkinDeployerFactory.supportSkinDeployer]
      */
-    fun setSkinViewResource(view: View, attrName: String, resId: Int) {
+    fun setSkinViewResource(view: View, attrName: String, resId: Int): Boolean {
         val parseSkinAttr = SkinAttribute.parseSkinAttr(view.context, attrName, resId)
         parseSkinAttr?.let {
             deploySkin(view, it)
             saveSkinView(view, it)
         }
+        return parseSkinAttr != null
     }
 
     private fun saveSkinView(view: View, attribute: SkinAttribute) {
@@ -186,7 +187,7 @@ object SkinManager {
     }
 
     fun setImageResource(view: ImageView, resId: Int) {
-        setSkinViewResource(view, SkinDeployerFactory.IMAGE_RES, resId)
+        setSkinViewResource(view, SkinDeployerFactory.SRC, resId)
     }
 
     /**
