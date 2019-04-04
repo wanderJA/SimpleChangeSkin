@@ -131,8 +131,6 @@ class SkinInflaterFactory : LayoutInflater.Factory {
         var view: View? = null
         try {
             val inflater = LayoutInflater.from(context)
-            fixInflaterContext(inflater, context)
-
             if (-1 == name.indexOf('.')) {
                 if ("View" == name || "ViewStub" == name || "ViewGroup" == name) {
                     view = inflater.createView(name, "android.view.", attrs)
@@ -152,10 +150,6 @@ class SkinInflaterFactory : LayoutInflater.Factory {
             view = null
         }
         return view
-    }
-
-    private fun fixInflaterContext(inflater: LayoutInflater?, context: Context) {
-
     }
 
     //只有在xml中设置了View的属性skin:enable，才支持xml属性换肤

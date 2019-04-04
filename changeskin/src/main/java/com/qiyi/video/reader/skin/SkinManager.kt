@@ -137,6 +137,7 @@ object SkinManager {
     fun restoreSkin() {
         skinResourceManager.restoreSkinDefault()
         pluginSkinPath = null
+        SkinConfig.saveSkinPath(context, "")
         notifySkinChanged()
 
     }
