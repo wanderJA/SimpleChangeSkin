@@ -80,9 +80,7 @@ object SkinManager {
         }
         object : AsyncTask<String, Unit, Unit>() {
             override fun doInBackground(vararg params: String?) {
-                val skinPath = params[0]
-                val file = File(skinPath)
-                if (!file.exists()) {
+                if (!File(newSkinPath).exists()) {
                     onLoadSkinListener?.onFail()
                     return
                 }
